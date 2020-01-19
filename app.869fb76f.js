@@ -15,4 +15,4 @@ parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcel
 },{"./cjs/react-dom.production.min.js":"i17t"}],"EPjR":[function(require,module,exports) {
 "use strict";var e=n(require("react")),t=n(require("react-dom"));function r(){if("function"!=typeof WeakMap)return null;var e=new WeakMap;return r=function(){return e},e}function n(e){if(e&&e.__esModule)return e;if(null===e||"object"!=typeof e&&"function"!=typeof e)return{default:e};var t=r();if(t&&t.has(e))return t.get(e);var n={},o=Object.defineProperty&&Object.getOwnPropertyDescriptor;for(var u in e)if(Object.prototype.hasOwnProperty.call(e,u)){var c=o?Object.getOwnPropertyDescriptor(e,u):null;c&&(c.get||c.set)?Object.defineProperty(n,u,c):n[u]=e[u]}return n.default=e,t&&t.set(e,n),n}t.render(e.createElement("p",null,"Hi!"),document.getElementById("root"));
 },{"react":"n8MK","react-dom":"NKHc"}]},{},["EPjR"], null)
-//# sourceMappingURL=jonbeek.github.io/ToMeToMeToMe/app.869fb76f.js.map
+//# sourceMappingURL=/ToMeToMeToMe/app.869fb76f.js.map

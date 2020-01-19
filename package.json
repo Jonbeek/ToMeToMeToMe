@@ -5,9 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc --no-emit && parcel build ./src/index.html",
-    "start": "parcel ./src/index.html --open",
-    "zip": "tsc --no-emit && parcel build ./src/index.html && cd www/ && bestzip ../"
+    "build": "tsc --noEmit && parcel build ./src/index.html",
+    "clean": "rm dist/*",
+    "clean-build": "npm run clean && npm run build",
+    "start": "parcel ./src/index.html --open --out-dir serve",
+    "zip": "npm run clean-build && cd dist/ && bestzip ../dist.zip *",
+    "gh-deploy": "npm run clean && tsc --noEmit && parcel build ./src/index.html --public-url='./' && gh-pages -d dist"
   },
   "keywords": [
     "game",

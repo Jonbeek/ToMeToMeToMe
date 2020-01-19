@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+		"module": "es2015",
+		"noImplicitAny": false,
+		"removeComments": true,
+		"preserveConstEnums": true,
+		"sourceMap": true,
+		"jsx": "react",
+		"baseUrl": "./src",
+		"moduleResolution": "node",
+		"target": "ES5",
+		"paths": {
+			"~*": ["./*"]
+		}
+	},
+	"include": [
+		"src/ts/**/*"
+	]
+}

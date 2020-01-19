@@ -1,0 +1,35 @@
+{
+  "name": "tomex3",
+  "version": "1.0.0",
+  "description": "A post-singularity trading simulator.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --no-emit && parcel build ./src/index.html",
+    "start": "parcel ./src/index.html --open",
+    "zip": "tsc --no-emit && parcel build ./src/index.html && cd www/ && bestzip ../"
+  },
+  "keywords": [
+    "game",
+    "wizardjam"
+  ],
+  "devDependencies": {
+    "@types/react": "^16.9.17",
+    "@types/react-dom": "^16.9.4",
+    "bestzip": "^2.1.5",
+    "gh-pages": "^2.2.0",
+    "parcel-bundler": "^1.12.4",
+    "sass": "^1.25.0",
+    "source-map-loader": "^0.2.4",
+    "typescript": "^3.7.4"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.2.2",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-redux": "^7.1.3",
+    "redux": "^4.0.5"
+  },
+  "author": "Jonathan Beekman",
+  "license": "MIT"
+}

@@ -1,4 +1,19 @@
-import { createStore, createSlice, configureStore } from "@reduxjs/toolkit";
+import { State, Message } from "./../types/State";
+import {
+	createStore,
+	createSlice,
+	configureStore,
+	PayloadAction
+} from "@reduxjs/toolkit";
+
+const maxMessageLength = 100;
+
+function addMessage(messages: Message[], msg: Message) {
+	messages.unshift(msg);
+	if (messages.length > maxMessageLength) {
+		messages.length = maxMessageLength;
+	}
+}
 
 const slice = createSlice({
 	name: "main",
@@ -34,11 +49,18 @@ const slice = createSlice({
 		player: {
 			location: "a"
 		},
-		text: []
-	},
+		messages: []
+	} as State,
 	reducers: {
-		move: (state, action) => {
+		move: (state, action: PayloadAction<string>) => {
 			state.player.location = action.payload;
+			addMessage(state.messages, {
+				id: "MOVE_MESSAGE",
+				params: [state.locations[action.payload].name]
+			});
+		},
+		selectMenu: (state, action: PayloadAction<string>) => {
+			state.current.menu = action.payload;
 		}
 	}
 });
@@ -47,4 +69,4 @@ export const Store = configureStore({
 	reducer: slice.reducer
 });
 
-export const { move } = slice.actions;
+export const { move, selectMenu } = slice.actions;

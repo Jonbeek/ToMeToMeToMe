@@ -3,4 +3,4 @@ export interface Message {
 	params: any[];
 }
 
-export function __(locale: string, t: Message): string;
+export function __(t: string | Message): string;

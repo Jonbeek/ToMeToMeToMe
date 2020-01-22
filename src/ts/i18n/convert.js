@@ -1,17 +1,13 @@
 import en_us from "./en_us.yaml";
 import format from "string-format";
-const locales = {
-	en_us: en_us
-};
 
-export const __ = (locale, t) => {
-	if (locale in locales) {
-		if (t.id in locale) {
-			return format(locales[locale][t.id], ...t.params);
-		} else {
-			return format("[{0}] not found in locale [{1}]", t.id, locale);
-		}
+// TODO: Localization (not during a game jame)
+export const __ = t => {
+	if (typeof t === "string" && t in en_us) {
+		return en_us[t];
+	} else if (typeof t !== "string" && t.id in en_us) {
+		return format(en_us[t.id], ...t.params);
 	} else {
-		return format("[{0}] not found in list of locales", locale);
+		return format("[{0}] not found in locale [{1}]", t.id || t, "en_us");
 	}
 };

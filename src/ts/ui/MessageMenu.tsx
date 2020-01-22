@@ -1,6 +1,7 @@
 import { __ } from "../i18n/convert";
 import { State, Message } from "../types/State";
 import * as React from "react";
+import _ from "lodash";
 
 const mapStateToProps = (state: State) => {
 	return {

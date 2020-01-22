@@ -1,7 +1,13 @@
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
+import * as ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import { Store } from "./state/Main";
+import * as React from "react";
+import Router from "./ui/Router";
 
 ReactDOM.render(
-	<p>Hi!</p>,
-	document.getElementById('root')
-)
+	<Provider store={Store}>
+		Hello!
+		<Router></Router>
+	</Provider>,
+	document.getElementById("root")
+);

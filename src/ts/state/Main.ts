@@ -5,22 +5,26 @@ const slice = createSlice({
 	initialState: {
 		current: {
 			screen: "town",
-			menu: "move"
+			menu: "move",
+			locale: "en_us"
 		},
 		locations: {
 			a: {
+				name: "New Spark",
 				position: {
 					x: 0,
 					y: 0
 				}
 			},
 			b: {
+				name: "Port Land",
 				position: {
 					x: 4,
 					y: 0
 				}
 			},
 			c: {
+				name: "Qubitia",
 				position: {
 					x: 4,
 					y: 3
@@ -29,7 +33,8 @@ const slice = createSlice({
 		},
 		player: {
 			location: "a"
-		}
+		},
+		text: []
 	},
 	reducers: {
 		move: (state, action) => {

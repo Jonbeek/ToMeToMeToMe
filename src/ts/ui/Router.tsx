@@ -11,7 +11,7 @@ const mapStateToProps = state => {
 
 const UnconnectedRouter = ({ currentScreen }) => {
 	return (
-		<div>
+		<div className="router">
 			{
 				{
 					town: <TownScreen></TownScreen>

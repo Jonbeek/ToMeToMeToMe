@@ -12,12 +12,8 @@
 		"paths": {
 			"~*": ["./*"]
 		},
-		"lib": [
-			"DOM",
-			"ES2015"
-		]
+		"lib": ["DOM", "ES2015"],
+		"allowSyntheticDefaultImports": true
 	},
-	"include": [
-		"src/ts/**/*"
-	],
+	"include": ["src/ts/**/*"]
 }

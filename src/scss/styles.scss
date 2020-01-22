@@ -2,3 +2,24 @@
 	font-family: sans-serif;
 	font-weight: 100;
 }
+
+#root {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+}
+.router {
+	height: 480px;
+	width: 640px;
+	border: 1px black solid;
+}
+
+.container--move {
+	flex-direction: column;
+	display: flex;
+
+	.button--move {
+		width: 100px;
+	}
+}

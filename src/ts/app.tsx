@@ -6,7 +6,6 @@ import Router from "./ui/Router";
 
 ReactDOM.render(
 	<Provider store={Store}>
-		Hello!
 		<Router></Router>
 	</Provider>,
 	document.getElementById("root")

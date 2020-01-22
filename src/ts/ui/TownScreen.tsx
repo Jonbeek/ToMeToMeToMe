@@ -16,16 +16,14 @@ const mapStateToProps = state => {
 };
 
 const UnconnectedTownScreen = ({ location, menu, details }) => {
+	const allMenus = {
+		text: <div></div>,
+		move: <MoveMenu></MoveMenu>
+	};
+
 	return (
 		<div>
-			<div className="submenu">
-				{
-					{
-						text: <div></div>,
-						move: <MoveMenu></MoveMenu>
-					}[menu]
-				}
-			</div>
+			<div className="submenu">{allMenus[menu]}</div>
 		</div>
 	);
 };

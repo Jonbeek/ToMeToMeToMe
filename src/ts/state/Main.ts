@@ -8,8 +8,12 @@ import {
 
 const maxMessageLength = 100;
 
-function addMessage(messages: Message[], msg: Message) {
-	messages.unshift(msg);
+function addMessage(messages: Message[], msg: string, ...params: any[]) {
+	let fullMessage: Message = {
+		id: msg,
+		params: params
+	};
+	messages.unshift(fullMessage);
 	if (messages.length > maxMessageLength) {
 		messages.length = maxMessageLength;
 	}
@@ -54,10 +58,11 @@ const slice = createSlice({
 	reducers: {
 		move: (state, action: PayloadAction<string>) => {
 			state.player.location = action.payload;
-			addMessage(state.messages, {
-				id: "MOVE_MESSAGE",
-				params: [state.locations[action.payload].name]
-			});
+			addMessage(
+				state.messages,
+				"MOVE_MESSAGE",
+				state.locations[action.payload].name
+			);
 		},
 		selectMenu: (state, action: PayloadAction<string>) => {
 			state.current.menu = action.payload;

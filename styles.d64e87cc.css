@@ -1,2 +1,0 @@
-*{font-family:sans-serif;font-weight:100}#root{display:flex;justify-content:center;align-items:center;height:100vh}.router{height:480px;width:640px;border:1px solid #000}.town{display:flex}.town .container--menus{flex-grow:0;display:flex;flex-direction:column}.town .submenu{flex-grow:1}.container--move{flex-direction:column;display:flex}.container--move .button--move{width:100px}
-/*# sourceMappingURL=styles.d64e87cc.css.map */

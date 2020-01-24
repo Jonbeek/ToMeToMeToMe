@@ -34,7 +34,7 @@ const UnconnectedTownScreen = ({ menu, selectMenu }) => {
 		inventory: {
 			name: __("INVENTORY_MENU_NAME"),
 			ui: <InventoryMenu></InventoryMenu>
-		}
+		},
 		messages: {
 			name: __("MESSAGE_MENU_NAME"),
 			ui: <MessageMenu></MessageMenu>
@@ -51,7 +51,11 @@ const UnconnectedTownScreen = ({ menu, selectMenu }) => {
 			<div className="container--menus">
 				<QuickStats></QuickStats>
 				{_.map(allMenus, (menu, id) => (
-					<button key={id} className="button--menu" onClick={() => selectMenu(id)}>
+					<button
+						key={id}
+						className="button--menu"
+						onClick={() => selectMenu(id)}
+					>
 						{menu.name}
 					</button>
 				))}

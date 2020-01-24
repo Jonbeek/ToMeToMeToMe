@@ -168,6 +168,7 @@ const slice = createSlice({
 		},
 		selectMenu: (state, action: PayloadAction<string>) => {
 			state.current.menu = action.payload;
+			state.current.message = null;
 		},
 		buy: (state, action: PayloadAction<Transaction>) => {
 			let payload = action.payload;
@@ -239,9 +240,7 @@ const slice = createSlice({
 			if (payload.price > cityGood.value) {
 				addMessage(
 					state,
-					finalTransaction
-						? "TOO_EXPENSIVE_FINAL_MESSAGE"
-						: "TOO_EXPENSIVE_MESSAGE"
+					finalTransaction ? "TOO_HIGH_FINAL_MESSAGE" : "TOO_HIGH_MESSAGE"
 				);
 				return;
 			}

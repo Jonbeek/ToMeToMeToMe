@@ -18,12 +18,13 @@ interface TradeState {
 }
 const mapStateToProps = (state: State) => {
 	return {
-		completedTransactions: state.current.completedTransactions,
+		completedTransactions: state.current.completedTransactions || [],
 		currentWeight: state.player.currentWeight,
 		maxWeight: state.player.maxWeight,
 		playerCash: state.player.cash,
 		playerGoods: state.player.goods,
-		townGoods: state.locations[state.player.location].goods
+		townGoods: state.locations[state.player.location].goods,
+		msg: __(state.current.message)
 	};
 };
 
@@ -52,6 +53,7 @@ class UnconnectedTradeMenu extends React.Component<TradeProps, TradeState> {
 			currentWeight,
 			maxWeight,
 			playerCash,
+			msg,
 			buy,
 			sell
 		} = this.props;
@@ -93,6 +95,7 @@ class UnconnectedTradeMenu extends React.Component<TradeProps, TradeState> {
 			);
 		});
 		let purchaseDisabled =
+			_.some(completedTransactions, t => t === selection) ||
 			goodWeight + currentWeight > maxWeight ||
 			(goodTotalPrice > playerCash && !isSelling) ||
 			goodQuantity == 0;
@@ -100,41 +103,45 @@ class UnconnectedTradeMenu extends React.Component<TradeProps, TradeState> {
 		let buttonName = isSelling ? "SELL_BUTTON" : "BUY_BUTTON";
 		return (
 			<div className="container--trade">
-				<form>{goodList}</form>
 				<div>
-					<label htmlFor="price">Price:</label>
-					<input
-						id="price"
-						type="number"
-						min="0"
-						step="1"
-						value={price || ""}
-						onChange={ev => this.setState({ price: ev.target.valueAsNumber })}
-					/>
-					<label htmlFor="quantity">Amount:</label>
-					<input
-						id="quantity"
-						type="number"
-						min="1"
-						step="1"
-						value={quantity || ""}
-						onChange={ev =>
-							this.setState({ quantity: ev.target.valueAsNumber })
+					<form>{goodList}</form>
+					<div>
+						<label htmlFor="price">Price:</label>
+						<input
+							id="price"
+							type="number"
+							min="0"
+							step="1"
+							value={price || ""}
+							onChange={ev => this.setState({ price: ev.target.valueAsNumber })}
+						/>
+						<label htmlFor="quantity">Amount:</label>
+						<input
+							id="quantity"
+							type="number"
+							min="1"
+							step="1"
+							value={quantity || ""}
+							onChange={ev =>
+								this.setState({ quantity: ev.target.valueAsNumber })
+							}
+						/>
+					</div>
+					<div className="warnings"></div>
+					<button
+						disabled={purchaseDisabled}
+						onClick={() =>
+							purchaseFunc({
+								goodId: selection,
+								price: price,
+								quantity: quantity
+							})
 						}
-					/>
+					>
+						{__(buttonName)}
+					</button>
 				</div>
-				<div className="warnings"></div>
-				<button
-					onClick={() =>
-						purchaseFunc({
-							goodId: selection,
-							price: price,
-							quantity: quantity
-						})
-					}
-				>
-					{__(buttonName)}
-				</button>
+				<div>{msg}</div>
 			</div>
 		);
 	}

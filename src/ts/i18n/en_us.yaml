@@ -1,7 +1,17 @@
 MOVE_MESSAGE: "Moved to {0}"
+INSUFFICIENT_MESSAGE: "Not enough units of the good"
+TOO_HEAVY: The transaction would result in you being overburdened
+TOO_EXPENSIVE: You can't pay for it
+TOO_LOW_FINAL: Too low, no more
+TOO_LOW: Too low!
+TRANSACTION_COMPLETE: Thank you!
+TOO_HIGH: Too high!
+
 MESSAGE_MENU_NAME: "History"
 MOVE_MENU_NAME: "Go"
 BUY_MENU_NAME: "Buy"
 SELL_MENU_NAME: "Sell"
+INVENTORY_MENU_NAME: "Inventory"
+
 BUY_BUTTON: "Buy"
 SELL_BUTTON: "Sell"

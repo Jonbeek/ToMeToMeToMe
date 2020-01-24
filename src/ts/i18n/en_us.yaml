@@ -1,3 +1,7 @@
 MOVE_MESSAGE: "Moved to {0}"
 MESSAGE_MENU_NAME: "History"
 MOVE_MENU_NAME: "Go"
+BUY_MENU_NAME: "Buy"
+SELL_MENU_NAME: "Sell"
+BUY_BUTTON: "Buy"
+SELL_BUTTON: "Sell"

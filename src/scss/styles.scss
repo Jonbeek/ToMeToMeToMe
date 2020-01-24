@@ -37,3 +37,24 @@
 		width: 100px;
 	}
 }
+
+.container--inventory {
+	display: table;
+
+	.header {
+		display: table-row;
+
+		div {
+			padding: 5px;
+			display: table-cell;
+		}
+	}
+	.inventory-item {
+		display: table-row;
+
+		div {
+			padding: 5px;
+			display: table-cell;
+		}
+	}
+}

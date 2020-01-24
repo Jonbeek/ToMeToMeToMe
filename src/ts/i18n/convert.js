@@ -8,6 +8,6 @@ export const __ = t => {
 	} else if (typeof t !== "string" && t.id in en_us) {
 		return format(en_us[t.id], ...t.params);
 	} else {
-		return format("[{0}] not found in locale [{1}]", t.id || t, "en_us");
+		return t
 	}
 };

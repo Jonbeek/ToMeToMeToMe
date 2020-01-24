@@ -5,6 +5,9 @@ import { MoveMenu } from "./MoveMenu";
 import { MessageMenu } from "./MessageMenu";
 import { __ } from "~ts/i18n/convert";
 import { selectMenu } from "~ts/state/Main";
+import { TradeMenu } from "./TradeMenu";
+import QuickStats from "./QuickStats";
+import { InventoryMenu } from "./InventoryMenu";
 
 const mapStateToProps = state => {
 	return {
@@ -20,6 +23,18 @@ const UnconnectedTownScreen = ({ menu, selectMenu }) => {
 			name: __("MOVE_MENU_NAME"),
 			ui: <MoveMenu></MoveMenu>
 		},
+		buy: {
+			name: __("BUY_MENU_NAME"),
+			ui: <TradeMenu isSelling={false}></TradeMenu>
+		},
+		sell: {
+			name: __("SELL_MENU_NAME"),
+			ui: <TradeMenu isSelling={true}></TradeMenu>
+		},
+		inventory: {
+			name: __("INVENTORY_MENU_NAME"),
+			ui: <InventoryMenu></InventoryMenu>
+		}
 		messages: {
 			name: __("MESSAGE_MENU_NAME"),
 			ui: <MessageMenu></MessageMenu>
@@ -34,8 +49,9 @@ const UnconnectedTownScreen = ({ menu, selectMenu }) => {
 		<div className="town">
 			<div className="submenu">{allMenus[menu].ui}</div>
 			<div className="container--menus">
+				<QuickStats></QuickStats>
 				{_.map(allMenus, (menu, id) => (
-					<button className="button--menu" onClick={() => selectMenu(id)}>
+					<button key={id} className="button--menu" onClick={() => selectMenu(id)}>
 						{menu.name}
 					</button>
 				))}

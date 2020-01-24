@@ -58,3 +58,22 @@
 		}
 	}
 }
+
+.input-table {
+	display: table;
+	.input-row {
+		display: table-row;
+
+		> * {
+			padding: 5px;
+			display: table-cell;
+		}
+
+		input[type="radio"] {
+			display: none;
+		}
+		input[type="radio"]:checked ~ * {
+			background-color: lightblue;
+		}
+	}
+}

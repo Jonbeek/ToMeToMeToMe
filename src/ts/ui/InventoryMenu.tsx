@@ -1,4 +1,3 @@
-import { __ } from "../i18n/convert";
 import { State, Message, Commodity, Rarity } from "../types/State";
 import * as React from "react";
 import _ from "lodash";

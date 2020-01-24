@@ -68,15 +68,14 @@ class UnconnectedTradeMenu extends React.Component<TradeProps, TradeState> {
 		let goodList = _.map(townGoods, (good, id) => {
 			let tv = townGoods[id];
 			let pv = _.find(playerGoods, good => good.id === id);
-			let checked =
-				!_.some(completedTransactions, t => t === id) && id === selection;
 			let disabled =
 				_.some(completedTransactions, t => t === id) ||
 				(isSelling
 					? pv == null || pv.quantity <= 0
 					: tv == null || tv.quantity <= 0);
+			let checked = !disabled && id === selection;
 			return (
-				<label key={id}>
+				<label className="input-row" key={id}>
 					<input
 						type="radio"
 						name="goodlist"
@@ -104,7 +103,14 @@ class UnconnectedTradeMenu extends React.Component<TradeProps, TradeState> {
 		return (
 			<div className="container--trade">
 				<div>
-					<form>{goodList}</form>
+					<form className="input-table">
+						<div className="input-row">
+							<div>Name</div>
+							<div>Available</div>
+							<div>Rarity</div>
+						</div>
+						{goodList}
+					</form>
 					<div>
 						<label htmlFor="price">Price:</label>
 						<input

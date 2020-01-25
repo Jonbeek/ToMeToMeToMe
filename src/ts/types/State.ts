@@ -3,6 +3,7 @@ import { Message } from "../i18n/convert";
 export { Message } from "../i18n/convert";
 
 export enum Rarity {
+	Fuel,
 	Common,
 	Uncommon,
 	Rare
@@ -18,14 +19,16 @@ export enum Need {
 	Stuffed
 }
 
+export type ResourceType = "fuel" | "nacid" | "nanites" | undefined;
+
 export interface Transaction {
-	goodId: string;
+	goodId: ResourceType;
 	quantity: number;
 	price: number;
 }
 
 export interface Commodity {
-	id: string;
+	id: ResourceType;
 	name: string;
 	value?: number;
 	quantity: number;
@@ -41,7 +44,7 @@ export interface Location {
 		x: number;
 		y: number;
 	};
-	goods: Record<string, Commodity>;
+	goods: Record<ResourceType, Commodity>;
 }
 
 export interface State {
@@ -50,14 +53,14 @@ export interface State {
 		menu: string;
 		locale: string;
 		message?: Message;
-		transactionCount: Record<string, number>;
-		completedTransactions: string[];
+		transactionCount: Record<ResourceType, number>;
+		completedTransactions: ResourceType[];
 	};
 	locations: Record<string, Location>;
 	player: {
 		location: string;
 		cash: number;
-		goods: Commodity[];
+		goods: Record<ResourceType, Commodity>;
 		maxWeight: number;
 		currentWeight: number;
 		speed: number;

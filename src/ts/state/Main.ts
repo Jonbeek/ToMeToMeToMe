@@ -4,7 +4,8 @@ import {
 	Commodity,
 	Rarity,
 	Need,
-	Transaction
+	Transaction,
+	ResourceType
 } from "./../types/State";
 import {
 	createStore,
@@ -32,7 +33,16 @@ function addMessage(state: State, msg: string, ...params: any[]) {
 	}
 }
 
-const defaultGoods: Record<string, Commodity> = {
+const defaultGoods: Record<ResourceType, Commodity> = {
+	fuel: {
+		id: "fuel",
+		name: "Fuel",
+		quantity: 1000,
+		rarity: Rarity.Fuel,
+		weight: 1,
+		recoverySpeed: 1000,
+		value: 1
+	},
 	nacid: {
 		id: "nacid",
 		name: "Nitric Acid",
@@ -53,9 +63,19 @@ const defaultGoods: Record<string, Commodity> = {
 	}
 };
 
+function buildPlayerGoods(): Record<ResourceType, Commodity> {
+	return _.mapValues(defaultGoods, good => {
+		let copy: Commodity = { ...good };
+		copy.quantity = 0;
+		copy.value = null;
+		copy.recoverySpeed = null;
+		return copy;
+	});
+}
+
 function buildCityGoods(
-	needs: Record<string, Need>
-): Record<string, Commodity> {
+	needs: Record<ResourceType, Need>
+): Record<ResourceType, Commodity> {
 	return _.mapValues(defaultGoods, (good, key) => {
 		if (!(key in needs)) {
 			console.log("Missing need for good " + key);
@@ -82,7 +102,7 @@ function buildCityGoods(
 
 const MAX_TRANSACTIONS = 5;
 
-function isMaxTransactions(state: State, id: string): boolean {
+function isMaxTransactions(state: State, id: ResourceType): boolean {
 	if (id in state.current.transactionCount) {
 		if (state.current.transactionCount[id] >= MAX_TRANSACTIONS) {
 			return true;
@@ -91,7 +111,7 @@ function isMaxTransactions(state: State, id: string): boolean {
 	return false;
 }
 // Returns true if
-function handleMaxTransactions(state: State, id: string): boolean {
+function handleMaxTransactions(state: State, id: ResourceType): boolean {
 	if (id in state.current.transactionCount) {
 		state.current.transactionCount[id]++;
 	} else {
@@ -111,7 +131,7 @@ const slice = createSlice({
 			screen: "town",
 			menu: "move",
 			locale: "en_us",
-			transactionCount: {},
+			transactionCount: { fuel: 0, nacid: 0, nanites: 0 },
 			completedTransactions: []
 		},
 		locations: {
@@ -122,6 +142,7 @@ const slice = createSlice({
 					y: 0
 				},
 				goods: buildCityGoods({
+					fuel: Need.Neutral,
 					nacid: Need.Satisfied,
 					nanites: Need.Peckish
 				})
@@ -133,6 +154,7 @@ const slice = createSlice({
 					y: 0
 				},
 				goods: buildCityGoods({
+					fuel: Need.Neutral,
 					nacid: Need.Peckish,
 					nanites: Need.Satisfied
 				})
@@ -144,6 +166,7 @@ const slice = createSlice({
 					y: 3
 				},
 				goods: buildCityGoods({
+					fuel: Need.Neutral,
 					nacid: Need.Satisfied,
 					nanites: Need.Hungry
 				})
@@ -153,7 +176,7 @@ const slice = createSlice({
 			location: "a",
 			cash: 1000,
 			currentWeight: 0,
-			goods: [],
+			goods: buildPlayerGoods(),
 			maxWeight: 1000,
 			speed: 1
 		},
@@ -163,7 +186,7 @@ const slice = createSlice({
 		move: (state, action: PayloadAction<string>) => {
 			state.player.location = action.payload;
 			state.current.completedTransactions = [];
-			state.current.transactionCount = {};
+			state.current.transactionCount = { fuel: 0, nanites: 0, nacid: 0 };
 			addMessage(state, "MOVE_MESSAGE", state.locations[action.payload].name);
 		},
 		selectMenu: (state, action: PayloadAction<string>) => {
@@ -204,13 +227,13 @@ const slice = createSlice({
 				good => good.id == payload.goodId
 			);
 			if (playerGood == null) {
-				state.player.goods.push({
+				state.player.goods[cityGood.id] = {
 					id: cityGood.id,
 					name: cityGood.name,
 					quantity: payload.quantity,
 					rarity: cityGood.rarity,
 					weight: cityGood.weight
-				});
+				};
 			} else {
 				playerGood.quantity += payload.quantity;
 			}

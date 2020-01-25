@@ -1,4 +1,10 @@
-import { State, Message, Commodity, Rarity } from "../types/State";
+import {
+	State,
+	Message,
+	Commodity,
+	Rarity,
+	ResourceType
+} from "../types/State";
 import * as React from "react";
 import _ from "lodash";
 import { connect } from "react-redux";
@@ -12,7 +18,7 @@ const mapStateToProps = (state: State) => {
 const UnconnectedInventoryMenu = ({
 	playerGoods
 }: {
-	playerGoods: Commodity[];
+	playerGoods: Record<ResourceType, Commodity>;
 }) => {
 	return (
 		<div className="container--inventory">
@@ -21,7 +27,7 @@ const UnconnectedInventoryMenu = ({
 				<div>Quantity</div>
 				<div>Rarity</div>
 			</div>
-			{playerGoods.map(good => (
+			{_.map(playerGoods, good => (
 				<div key={good.id} className="inventory-item">
 					<div>{good.name}</div>
 					<div>{good.quantity}</div>

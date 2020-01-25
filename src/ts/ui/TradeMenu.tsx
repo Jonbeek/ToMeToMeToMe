@@ -2,7 +2,13 @@ import { buy, sell } from "../state/Main";
 import * as React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import * as _ from "lodash";
-import { Commodity, Transaction, State, Rarity } from "~ts/types/State";
+import {
+	Commodity,
+	Transaction,
+	State,
+	Rarity,
+	ResourceType
+} from "~ts/types/State";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { __ } from "~ts/i18n/convert";
 
@@ -12,7 +18,7 @@ interface TradeProps extends PropsFromRedux {
 }
 
 interface TradeState {
-	selection?: string;
+	selection?: ResourceType;
 	price?: number;
 	quantity?: number;
 }
@@ -37,7 +43,7 @@ class UnconnectedTradeMenu extends React.Component<TradeProps, TradeState> {
 		selection: null
 	};
 
-	selectGood(id: string) {
+	selectGood(id: ResourceType) {
 		this.setState({
 			selection: id
 		});
@@ -65,7 +71,7 @@ class UnconnectedTradeMenu extends React.Component<TradeProps, TradeState> {
 		let goodWeight =
 			(quantity || 0) * ((townVersion && townVersion.weight) || 0);
 		let goodTotalPrice = (quantity || 0) * (price || 0);
-		let goodList = _.map(townGoods, (good, id) => {
+		let goodList = _.map(townGoods, (good, id: ResourceType) => {
 			let tv = townGoods[id];
 			let pv = _.find(playerGoods, good => good.id === id);
 			let disabled =
@@ -84,7 +90,7 @@ class UnconnectedTradeMenu extends React.Component<TradeProps, TradeState> {
 						disabled={disabled}
 						onChange={ev => {
 							ev.stopPropagation();
-							this.selectGood(ev.target.value);
+							this.selectGood(ev.target.value as ResourceType);
 						}}
 					/>
 					<div>{good.name}</div>

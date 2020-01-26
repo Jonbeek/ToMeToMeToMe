@@ -64,6 +64,8 @@ export interface State {
 		maxWeight: number;
 		currentWeight: number;
 		speed: number;
+		// Distance * fuelConsumption = fuel used
+		fuelConsumption: number;
 	};
 	messages: Message[];
 }

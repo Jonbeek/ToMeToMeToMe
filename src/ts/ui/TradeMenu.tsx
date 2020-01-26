@@ -94,8 +94,9 @@ class UnconnectedTradeMenu extends React.Component<TradeProps, TradeState> {
 						}}
 					/>
 					<div>{good.name}</div>
-					<div>{isSelling ? (pv && pv.quantity) || 0 : tv.quantity}</div>
+					<div>{good.weight}</div>
 					<div>{Rarity[good.rarity]}</div>
+					<div>{isSelling ? (pv && pv.quantity) || 0 : tv.quantity}</div>
 				</label>
 			);
 		});
@@ -112,8 +113,9 @@ class UnconnectedTradeMenu extends React.Component<TradeProps, TradeState> {
 					<form className="input-table">
 						<div className="input-row">
 							<div>Name</div>
-							<div>Available</div>
+							<div>Weight</div>
 							<div>Rarity</div>
+							<div>Available</div>
 						</div>
 						{goodList}
 					</form>

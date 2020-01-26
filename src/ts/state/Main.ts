@@ -5,6 +5,7 @@ import {
 	Rarity,
 	Need,
 	Transaction,
+	Location,
 	ResourceType
 } from "./../types/State";
 import {
@@ -14,6 +15,12 @@ import {
 	PayloadAction
 } from "@reduxjs/toolkit";
 import _ from "lodash";
+
+function distance(src: Location, dst: Location) {
+	let x = src.position.x - dst.position.x;
+	let y = src.position.y - dst.position.y;
+	return Math.round(Math.sqrt(x * x + y * y));
+}
 
 const maxMessageLength = 100;
 
@@ -59,7 +66,7 @@ const defaultGoods: Record<ResourceType, Commodity> = {
 		rarity: Rarity.Common,
 		weight: 10,
 		recoverySpeed: 10,
-		value: 100
+		value: 75
 	}
 };
 
@@ -100,6 +107,46 @@ function buildCityGoods(
 	});
 }
 
+function translateTransaction(
+	setPrice: number,
+	value: number,
+	successAbove: boolean,
+	finalTransaction: boolean
+): string {
+	let percentDiff = Math.abs((setPrice - value) / value) * 100;
+	if (setPrice == value) {
+		return "TRANSACTION_GOOD_PERFECT";
+	} else if (
+		(setPrice > value && successAbove) ||
+		(setPrice < value && !successAbove)
+	) {
+		if (percentDiff < 10) {
+			return "TRANSACTION_GOOD_10";
+		} else if (percentDiff < 20) {
+			return "TRANSACTION_GOOD_20";
+		} else if (percentDiff < 30) {
+			return "TRANSACTION_GOOD_30";
+		} else if (percentDiff < 40) {
+			return "TRANSACTION_GOOD_40";
+		} else {
+			return "TRANSACTION_GOOD_50";
+		}
+	} else {
+		let suffix = finalTransaction ? "_FINAL" : "";
+		if (percentDiff < 10) {
+			return "TRANSACTION_BAD_10" + suffix;
+		} else if (percentDiff < 20) {
+			return "TRANSACTION_BAD_20" + suffix;
+		} else if (percentDiff < 30) {
+			return "TRANSACTION_BAD_30" + suffix;
+		} else if (percentDiff < 40) {
+			return "TRANSACTION_BAD_40" + suffix;
+		} else {
+			return "TRANSACTION_BAD_50" + suffix;
+		}
+	}
+}
+
 const MAX_TRANSACTIONS = 5;
 
 function isMaxTransactions(state: State, id: ResourceType): boolean {
@@ -112,6 +159,9 @@ function isMaxTransactions(state: State, id: ResourceType): boolean {
 }
 // Returns true if
 function handleMaxTransactions(state: State, id: ResourceType): boolean {
+	if (id === "fuel") {
+		return false;
+	}
 	if (id in state.current.transactionCount) {
 		state.current.transactionCount[id]++;
 	} else {
@@ -178,12 +228,25 @@ const slice = createSlice({
 			currentWeight: 0,
 			goods: buildPlayerGoods(),
 			maxWeight: 1000,
-			speed: 1
+			speed: 1,
+			fuelConsumption: 10
 		},
 		messages: []
 	} as State,
 	reducers: {
 		move: (state, action: PayloadAction<string>) => {
+			let fuelRequired =
+				state.player.fuelConsumption *
+				distance(
+					state.locations[state.player.location],
+					state.locations[action.payload]
+				);
+			if (fuelRequired > state.player.goods["fuel"].quantity) {
+				addMessage(state, "CANNOT_TRAVEL_MESSAGE");
+				return;
+			}
+			state.player.goods["fuel"].quantity -= fuelRequired;
+			state.player.currentWeight -= defaultGoods["fuel"].weight * fuelRequired;
 			state.player.location = action.payload;
 			state.current.completedTransactions = [];
 			state.current.transactionCount = { fuel: 0, nanites: 0, nacid: 0 };
@@ -192,6 +255,11 @@ const slice = createSlice({
 		selectMenu: (state, action: PayloadAction<string>) => {
 			state.current.menu = action.payload;
 			state.current.message = null;
+			if (action.payload === "buy") {
+				addMessage(state, "ENTER_BUY");
+			} else if (action.payload === "sell") {
+				addMessage(state, "ENTER_SELL");
+			}
 		},
 		buy: (state, action: PayloadAction<Transaction>) => {
 			let payload = action.payload;
@@ -217,15 +285,20 @@ const slice = createSlice({
 				return;
 			}
 			let finalTransaction = handleMaxTransactions(state, payload.goodId);
+			addMessage(
+				state,
+				translateTransaction(
+					payload.price,
+					cityGood.value,
+					true,
+					finalTransaction
+				)
+			);
 			// The above checks are only as a backup. Seeing any of those messages should not be possible
 			if (cityGood.value > payload.price) {
-				addMessage(state, finalTransaction ? "TOO_LOW_FINAL" : "TOO_LOW");
 				return;
 			}
-			let playerGood = _.find(
-				state.player.goods,
-				good => good.id == payload.goodId
-			);
+			let playerGood = state.player.goods[payload.goodId];
 			if (playerGood == null) {
 				state.player.goods[cityGood.id] = {
 					id: cityGood.id,
@@ -240,15 +313,13 @@ const slice = createSlice({
 			cityGood.quantity -= payload.quantity;
 			state.player.cash -= payload.price * payload.quantity;
 			state.player.currentWeight += payload.quantity * cityGood.weight;
-			state.current.completedTransactions.push(payload.goodId);
-			addMessage(state, "TRANSACTION_COMPLETE");
+			if (payload.goodId !== "fuel") {
+				state.current.completedTransactions.push(payload.goodId);
+			}
 		},
 		sell: (state, action: PayloadAction<Transaction>) => {
 			let payload = action.payload;
-			let playerGood = _.find(
-				state.player.goods,
-				good => good.id == payload.goodId
-			);
+			let playerGood = state.player.goods[payload.goodId];
 			let cityGood =
 				state.locations[state.player.location].goods[payload.goodId];
 			if (playerGood == null) {
@@ -260,19 +331,26 @@ const slice = createSlice({
 				return;
 			}
 			const finalTransaction = handleMaxTransactions(state, payload.goodId);
-			if (payload.price > cityGood.value) {
-				addMessage(
-					state,
-					finalTransaction ? "TOO_HIGH_FINAL_MESSAGE" : "TOO_HIGH_MESSAGE"
-				);
+			addMessage(
+				state,
+				translateTransaction(
+					payload.price,
+					cityGood.value,
+					false,
+					finalTransaction
+				)
+			);
+			if (cityGood.value < payload.price) {
 				return;
 			}
 			// Fewer conditions, thank god
+			state.player.currentWeight -= payload.quantity * playerGood.weight;
 			playerGood.quantity -= payload.quantity;
 			cityGood.quantity += payload.quantity;
 			state.player.cash += payload.price * payload.quantity;
-			state.current.completedTransactions.push(payload.goodId);
-			addMessage(state, "TRANSACTION_COMPLETE");
+			if (payload.goodId !== "fuel") {
+				state.current.completedTransactions.push(payload.goodId);
+			}
 		}
 	}
 });
